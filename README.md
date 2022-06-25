@@ -1,4 +1,4 @@
-# toutiao-mobile
+# vant-demo
 
 ## Project setup
 ```

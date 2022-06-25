@@ -1,6 +1,6 @@
 <template>
   <div class="search-container">
-    <form action="/">
+    <form action="/" class="search-form">
       <van-search
         v-model="searchText"
         show-action
@@ -11,8 +11,12 @@
         @focus="isResultShow = false"
       />
     </form>
-    <SearchResult v-if="isResultShow" />
-    <SearchSuggestion v-else-if="searchText" :searchText="searchText" />
+    <SearchResult v-if="isResultShow" :searchText="searchText" />
+    <SearchSuggestion
+      v-else-if="searchText"
+      :searchText="searchText"
+      @search="onSearch"
+    />
     <SearchHistory v-else />
   </div>
 </template>
@@ -42,7 +46,7 @@ export default {
   mounted () { },
   methods: {
     onSearch (val) {
-      // this.searchText = val
+      this.searchText = val
       this.isResultShow = true
     },
     onCancel () {
@@ -55,8 +59,16 @@ export default {
 
 <style scoped lang="less">
 .search-container {
+  padding-top: 108px;
   .van-search__action {
     color: #fff;
+  }
+  .search-form {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
   }
 }
 </style>

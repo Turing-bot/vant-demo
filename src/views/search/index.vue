@@ -17,7 +17,12 @@
       :searchText="searchText"
       @search="onSearch"
     />
-    <SearchHistory v-else />
+    <SearchHistory
+      v-else
+      :searchHistories="searchHistories"
+      @clear-search-history="searchHistories = []"
+      @search="onSearch"
+    />
   </div>
 </template>
 
@@ -37,7 +42,8 @@ export default {
   data () {
     return {
       searchText: '',
-      isResultShow: false
+      isResultShow: false,
+      searchHistories: []
     }
   },
   computed: {},
@@ -47,6 +53,11 @@ export default {
   methods: {
     onSearch (val) {
       this.searchText = val
+      const index = this.searchHistories.indexOf(val)
+      if (index !== -1) {
+        this.searchHistories.splice(index, 1)
+      }
+      this.searchHistories.unshift(val)
       this.isResultShow = true
     },
     onCancel () {

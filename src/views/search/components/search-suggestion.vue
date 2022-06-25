@@ -3,11 +3,10 @@
     <van-cell
       v-for="(text, index) in suggestionsList"
       :key="index"
-      :title="text"
       icon="search"
     >
-      <span slot="title" v-html="highlight(text)"></span
-    ></van-cell>
+      <span slot="title" v-html="highlight(text)"></span>
+    </van-cell>
   </div>
 </template>
 
@@ -48,8 +47,12 @@ export default {
       } catch (err) {
         this.$toast('获取建议失败！')
       }
+    },
+    highlight (text) {
+      const highlightStr = `<span class="active">${this.searchText}</span>`
+      const reg = new RegExp(this.searchText, 'gi')
+      return text.replace(reg, highlightStr)
     }
-
   }
 }
 </script>

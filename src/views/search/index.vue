@@ -5,14 +5,15 @@
         v-model="searchText"
         show-action
         placeholder="请输入搜索关键词"
+        background="#3296fa"
         @search="onSearch"
         @cancel="onCancel"
         @focus="isResultShow = false"
       />
     </form>
     <SearchResult v-if="isResultShow" />
-    <SearchHistory v-else-if="searchText" />
-    <SearchSuggestion v-else :searchText="searchText" />
+    <SearchSuggestion v-else-if="searchText" :searchText="searchText" />
+    <SearchHistory v-else />
   </div>
 </template>
 
@@ -41,7 +42,7 @@ export default {
   mounted () { },
   methods: {
     onSearch (val) {
-      this.searchText = val
+      // this.searchText = val
       this.isResultShow = true
     },
     onCancel () {
@@ -53,9 +54,9 @@ export default {
 </script>
 
 <style scoped lang="less">
-// .search-container {
-//   .van-search__action {
-//     color: #fff;
-//   }
-// }
+.search-container {
+  .van-search__action {
+    color: #fff;
+  }
+}
 </style>

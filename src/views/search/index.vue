@@ -30,6 +30,7 @@
 import SearchResult from './components/search-result.vue'
 import SearchHistory from './components/search-history.vue'
 import SearchSuggestion from './components/search-suggestion.vue'
+import { setItem, getItem } from '@/utils/storage'
 
 export default {
   name: 'SearchContainer',
@@ -43,11 +44,15 @@ export default {
     return {
       searchText: '',
       isResultShow: false,
-      searchHistories: []
+      searchHistories: getItem('TOUTIAO_SEARCH_HISTORIES') || []
     }
   },
   computed: {},
-  watch: {},
+  watch: {
+    searchHistories (value) {
+      setItem('TOUTIAO_SEARCH_HISTORIES', value)
+    }
+  },
   created () { },
   mounted () { },
   methods: {

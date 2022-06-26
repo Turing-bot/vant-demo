@@ -37,14 +37,23 @@
           </div>
           <van-button
             class="follow-btn"
+            round
+            size="small"
+            v-if="article.is_followed"
+            @click="onFollow"
+            >已关注</van-button
+          >
+          <van-button
+            class="follow-btn"
             type="info"
             color="#3296fa"
             round
             size="small"
             icon="plus"
+            v-else
+            @click="onFollow"
             >关注</van-button
           >
-          <van-button class="follow-btn" round size="small">已关注</van-button>
         </van-cell>
         <!-- /用户信息 -->
 
@@ -95,6 +104,7 @@
 <script>
 import { ImagePreview } from 'vant'
 import { getArticleById } from '@/api/article.js'
+import { addFollow, deleteFollow } from '@/api/user.js'
 
 export default {
   name: 'ArticleContainer',
@@ -147,6 +157,22 @@ export default {
           })
         }
       })
+    },
+    async onFollow () {
+      try {
+        if (this.article.is_followed) {
+          await deleteFollow(this.article.aut_id)
+        } else {
+          await addFollow(this.article.aut_id)
+        }
+        this.article.is_followed = !this.article.is_followed
+      } catch (err) {
+        let message = '操作失败，请重试！'
+        if (err.response && err.response.status === 400) {
+          message = '你不能关注自己！'
+        }
+        this.$toast(message)
+      }
     }
   }
 }

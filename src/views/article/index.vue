@@ -11,15 +11,15 @@
 
     <div class="main-wrap">
       <!-- 加载中 -->
-      <div class="loading-wrap">
+      <div class="loading-wrap" v-if="loading">
         <van-loading color="#3296fa" vertical>加载中</van-loading>
       </div>
       <!-- /加载中 -->
 
       <!-- 加载完成-文章详情 -->
-      <div class="article-detail">
+      <div class="article-detail" v-else-if="article.title">
         <!-- 文章标题 -->
-        <h1 class="article-title">这是文章标题</h1>
+        <h1 class="article-title">{{ article.title }}</h1>
         <!-- /文章标题 -->
 
         <!-- 用户信息 -->
@@ -29,10 +29,12 @@
             slot="icon"
             round
             fit="cover"
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="article.aut_photo"
           />
-          <div slot="title" class="user-name">黑马头条号</div>
-          <div slot="label" class="publish-date">14小时前</div>
+          <div slot="title" class="user-name">{{ article.aut_name }}</div>
+          <div slot="label" class="publish-date">
+            {{ article.pubdate | relativeTime }}
+          </div>
           <van-button
             class="follow-btn"
             type="info"
@@ -42,32 +44,32 @@
             icon="plus"
             >关注</van-button
           >
-          <!-- <van-button
-            class="follow-btn"
-            round
-            size="small"
-          >已关注</van-button> -->
+          <van-button class="follow-btn" round size="small">已关注</van-button>
         </van-cell>
         <!-- /用户信息 -->
 
         <!-- 文章内容 -->
-        <div class="article-content">这是文章内容</div>
+        <div
+          class="article-content markdown-body"
+          v-html="article.content"
+          ref="article-content"
+        ></div>
         <van-divider>正文结束</van-divider>
       </div>
       <!-- /加载完成-文章详情 -->
 
       <!-- 加载失败：404 -->
-      <div class="error-wrap">
+      <div class="error-wrap" v-else-if="errStatus === 404">
         <van-icon name="failure" />
         <p class="text">该资源不存在或已删除！</p>
       </div>
       <!-- /加载失败：404 -->
 
       <!-- 加载失败：其它未知错误（例如网络原因或服务端异常） -->
-      <div class="error-wrap">
+      <div class="error-wrap" v-else>
         <van-icon name="failure" />
         <p class="text">内容加载失败！</p>
-        <van-button class="retry-btn">点击重试</van-button>
+        <van-button class="retry-btn" @click="loadArticle">点击重试</van-button>
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
@@ -77,7 +79,11 @@
       <van-button class="comment-btn" type="default" round size="small"
         >写评论
       </van-button>
-      <van-icon class="comment-icon" name="comment-o" badge="123" />
+      <van-icon
+        class="comment-icon"
+        name="comment-o"
+        :badge="article.read_count"
+      />
       <van-button class="btn-item" icon="star-o" />
       <van-button class="btn-item" icon="good-job-o" />
       <van-icon name="share" color="#777777"></van-icon>
@@ -87,6 +93,7 @@
 </template>
 
 <script>
+import { ImagePreview } from 'vant'
 import { getArticleById } from '@/api/article.js'
 
 export default {
@@ -94,12 +101,16 @@ export default {
   components: {},
   props: {
     articleId: {
-      type: [Number, String],
+      type: [Number, String, Object],
       required: true
     }
   },
   data () {
-    return {}
+    return {
+      article: {},
+      loading: false,
+      errStatus: 0
+    }
   },
   computed: {},
   watch: {},
@@ -109,18 +120,41 @@ export default {
   mounted () { },
   methods: {
     async loadArticle () {
+      this.loading = true
       try {
         const { data } = await getArticleById(this.articleId)
-        console.log(data)
+        this.article = data.data
+        setTimeout(() => {
+          this.previewImage()
+        }, 0)
       } catch (err) {
-        console.log('请求出错！', err)
+        if (err.response && err.response.status === 404) {
+          this.errStatus = 404
+        }
       }
+      this.loading = false
+    },
+    previewImage () {
+      const articleContent = this.$refs['article-content']
+      const imgs = articleContent.querySelectorAll('img')
+      const images = []
+      imgs.forEach((img, index) => {
+        images.push(img.src)
+        img.onclick = () => {
+          ImagePreview({
+            images,
+            startPosition: index
+          })
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped lang="less">
+@import './github-markdown.css';
+
 .article-container {
   .main-wrap {
     position: fixed;

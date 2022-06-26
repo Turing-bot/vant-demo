@@ -71,7 +71,11 @@
             v-model="article.is_collected"
             :article-id="article.art_id"
           />
-          <van-button class="btn-item" icon="good-job-o" />
+          <LikeArticle
+            class="btn-item"
+            v-model="article.attitude"
+            :article-id="article.art_id"
+          />
           <van-icon name="share" color="#777777"></van-icon>
         </div>
         <!-- /底部区域 -->
@@ -101,12 +105,14 @@ import { ImagePreview } from 'vant'
 import { getArticleById } from '@/api/article.js'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
+import LikeArticle from '@/components/like-article'
 
 export default {
   name: 'ArticleContainer',
   components: {
     FollowUser,
-    CollectArticle
+    CollectArticle,
+    LikeArticle
   },
   props: {
     articleId: {

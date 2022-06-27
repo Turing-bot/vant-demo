@@ -59,10 +59,16 @@
         <CommentList
           :source="article.art_id"
           @onload-success="totalCommentCount = $event.total_count"
+          :list="commentList"
         />
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPostShow = true"
             >写评论
           </van-button>
           <van-icon
@@ -81,6 +87,12 @@
             :article-id="article.art_id"
           />
           <van-icon name="share" color="#777777"></van-icon>
+          <van-popup v-model="isPostShow" position="bottom">
+            <CommentPost
+              :target="article.art_id"
+              @post-success="onPostSuccess"
+            />
+          </van-popup>
         </div>
         <!-- /底部区域 -->
       </div>
@@ -111,6 +123,7 @@ import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
 import CommentList from './components/comment-list.vue'
+import CommentPost from './components/comment-post.vue'
 
 export default {
   name: 'ArticleContainer',
@@ -118,7 +131,8 @@ export default {
     FollowUser,
     CollectArticle,
     LikeArticle,
-    CommentList
+    CommentList,
+    CommentPost
   },
   props: {
     articleId: {
@@ -131,7 +145,9 @@ export default {
       article: {},
       loading: false,
       errStatus: 0,
-      totalCommentCount: 0
+      totalCommentCount: 0,
+      isPostShow: false,
+      commentList: []
     }
   },
   computed: {},
@@ -169,6 +185,10 @@ export default {
           })
         }
       })
+    },
+    onPostSuccess (data) {
+      this.isPostShow = false
+      this.commentList.unshift(data.new_obj)
     }
   }
 }

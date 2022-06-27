@@ -56,6 +56,10 @@
           ref="article-content"
         ></div>
         <van-divider>正文结束</van-divider>
+        <CommentList
+          :source="article.art_id"
+          @onload-success="totalCommentCount = $event.total_count"
+        />
         <!-- 底部区域 -->
         <div class="article-bottom">
           <van-button class="comment-btn" type="default" round size="small"
@@ -64,7 +68,7 @@
           <van-icon
             class="comment-icon"
             name="comment-o"
-            :badge="article.read_count"
+            :badge="totalCommentCount"
           />
           <CollectArticle
             class="btn-item"
@@ -106,13 +110,15 @@ import { getArticleById } from '@/api/article.js'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
+import CommentList from './components/comment-list.vue'
 
 export default {
   name: 'ArticleContainer',
   components: {
     FollowUser,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    CommentList
   },
   props: {
     articleId: {
@@ -124,7 +130,8 @@ export default {
     return {
       article: {},
       loading: false,
-      errStatus: 0
+      errStatus: 0,
+      totalCommentCount: 0
     }
   },
   computed: {},

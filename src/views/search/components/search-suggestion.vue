@@ -50,6 +50,7 @@ export default {
       }
     },
     highlight (text) {
+      if (!text) return
       const highlightStr = `<span class="active">${this.searchText}</span>`
       const reg = new RegExp(this.searchText, 'gi')
       return text.replace(reg, highlightStr)

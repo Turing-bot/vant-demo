@@ -4,7 +4,7 @@ import store from '@/store'
 import router from '@/router'
 
 const request = axios.create({
-  baseURL: 'http://geek.itheima.net'
+  baseURL: 'http://toutiao.itheima.net'
 })
 
 request.defaults.transformResponse = [

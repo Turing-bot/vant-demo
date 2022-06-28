@@ -60,6 +60,7 @@
           :source="article.art_id"
           @onload-success="totalCommentCount = $event.total_count"
           :list="commentList"
+          @reply-click="onReplyClick"
         />
         <!-- 底部区域 -->
         <div class="article-bottom">
@@ -87,14 +88,12 @@
             :article-id="article.art_id"
           />
           <van-icon name="share" color="#777777"></van-icon>
-          <van-popup v-model="isPostShow" position="bottom">
-            <CommentPost
-              :target="article.art_id"
-              @post-success="onPostSuccess"
-            />
-          </van-popup>
         </div>
         <!-- /底部区域 -->
+        <!-- 文章评论 -->
+        <van-popup v-model="isPostShow" position="bottom">
+          <CommentPost :target="article.art_id" @post-success="onPostSuccess" />
+        </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -113,6 +112,19 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="isReplyShow"
+      position="bottom"
+      style="height: 100%"
+      get-container="body"
+    >
+      <CommentReply
+        :comment="currentComment"
+        @close="isReplyShow = false"
+        v-if="isReplyShow"
+      />
+    </van-popup>
   </div>
 </template>
 
@@ -124,6 +136,7 @@ import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
 import CommentList from './components/comment-list.vue'
 import CommentPost from './components/comment-post.vue'
+import CommentReply from './components/comment-reply.vue'
 
 export default {
   name: 'ArticleContainer',
@@ -132,7 +145,13 @@ export default {
     CollectArticle,
     LikeArticle,
     CommentList,
-    CommentPost
+    CommentPost,
+    CommentReply
+  },
+  provide: function () {
+    return {
+      articleId: this.articleId
+    }
   },
   props: {
     articleId: {
@@ -147,7 +166,9 @@ export default {
       errStatus: 0,
       totalCommentCount: 0,
       isPostShow: false,
-      commentList: []
+      isReplyShow: false,
+      commentList: [],
+      currentComment: {}
     }
   },
   computed: {},
@@ -189,6 +210,10 @@ export default {
     onPostSuccess (data) {
       this.isPostShow = false
       this.commentList.unshift(data.new_obj)
+    },
+    onReplyClick (comment) {
+      this.currentComment = comment
+      this.isReplyShow = true
     }
   }
 }

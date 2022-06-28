@@ -6,8 +6,14 @@
     @load="onLoad"
     :error.sync="error"
     error-text="加载失败，请点击重试！"
+    :immediate-check="false"
   >
-    <CommentItem :comment="item" v-for="(item, index) in list" :key="index" />
+    <CommentItem
+      :comment="item"
+      v-for="(item, index) in list"
+      :key="index"
+      @reply-click="$emit('reply-click', $event)"
+    />
   </van-list>
 </template>
 
@@ -28,6 +34,13 @@ export default {
     list: {
       type: Array,
       default: () => { }
+    },
+    type: {
+      type: String,
+      validator (value) {
+        return ['a', 'c'].includes(value)
+      },
+      default: 'a'
     }
   },
   data () {
@@ -42,6 +55,7 @@ export default {
   computed: {},
   watch: {},
   created () {
+    this.loading = true
     this.onLoad()
   },
   mounted () { },
@@ -49,7 +63,7 @@ export default {
     async onLoad () {
       try {
         const { data } = await getComments({
-          type: 'a',
+          type: this.type,
           source: this.source.toString(),
           offset: this.offset,
           limit: this.limit

@@ -28,6 +28,12 @@ export default {
       required: true
     }
   },
+  inject: {
+    articleId: {
+      type: [Number, String, Object],
+      default: null
+    }
+  },
   data () {
     return {
       message: ''
@@ -48,7 +54,7 @@ export default {
         const { data } = await addComment({
           target: this.target.toString(),
           content: this.message,
-          art_id: null
+          art_id: this.articleId ? this.articleId.toString() : this.articleId
         })
         this.message = ''
         this.$emit('post-success', data.data)

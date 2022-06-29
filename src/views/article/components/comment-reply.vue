@@ -8,7 +8,7 @@
       <van-icon slot="left" name="cross" @click="$emit('close')" />
     </van-nav-bar>
     <div class="scroll-wrap">
-      <CommentItem :comment="comment" />
+      <CommentItem :comment="comment" :visible="visible" />
       <van-cell title="全部回复" />
       <CommentList :source="comment.com_id" type="c" :list="commentList" />
     </div>
@@ -48,12 +48,15 @@ export default {
   data () {
     return {
       isPostShow: false,
-      commentList: []
+      commentList: [],
+      visible: false
     }
   },
   computed: {},
   watch: {},
-  created () { },
+  created () {
+
+  },
   mounted () { },
   methods: {
     onPostSuccess (data) {

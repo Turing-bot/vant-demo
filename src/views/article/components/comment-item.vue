@@ -27,6 +27,7 @@
           comment.pubdate | relativeTime
         }}</span>
         <van-button
+          v-show="visible"
           class="reply-btn"
           round
           @click="$emit('reply-click', comment)"
@@ -47,6 +48,10 @@ export default {
     comment: {
       type: Object,
       required: true
+    },
+    visible: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

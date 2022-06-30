@@ -35,7 +35,6 @@ export default {
   },
   data () {
     return {
-      message: '',
       localName: this.value
     }
   },

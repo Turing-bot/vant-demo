@@ -23,7 +23,12 @@
       is-link
       @click="reviseGender = true"
     />
-    <van-cell title="生日" :value="userList.birthday" is-link />
+    <van-cell
+      title="生日"
+      :value="userList.birthday"
+      is-link
+      @click="reviseBirthday = true"
+    />
     <van-popup v-model="reviseName" style="height: 100%" position="bottom">
       <ReviseName
         @close="reviseName = false"
@@ -38,6 +43,13 @@
         v-if="reviseGender"
       />
     </van-popup>
+    <van-popup v-model="reviseBirthday" position="bottom">
+      <ReviseBirthday
+        @close="reviseBirthday = false"
+        v-model="userList.birthday"
+        v-if="reviseBirthday"
+      />
+    </van-popup>
   </div>
 </template>
 
@@ -45,19 +57,22 @@
 import { getUserProfile } from '@/api/user'
 import ReviseName from './components/reviseName.vue'
 import ReviseGender from './components/reviseGender.vue'
+import ReviseBirthday from './components/reviseBirthday.vue'
 
 export default {
   name: 'UserProfile',
   components: {
     ReviseName,
-    ReviseGender
+    ReviseGender,
+    ReviseBirthday
   },
   props: {},
   data () {
     return {
       userList: {},
       reviseName: false,
-      reviseGender: false
+      reviseGender: false,
+      reviseBirthday: false
     }
   },
   computed: {},

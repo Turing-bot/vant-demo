@@ -19,8 +19,9 @@
     />
     <van-cell
       title="性别"
-      :value="(userList.gender = 1 ? '女' : '男')"
+      :value="userList.gender === 1 ? '女' : '男'"
       is-link
+      @click="reviseGender = true"
     />
     <van-cell title="生日" :value="userList.birthday" is-link />
     <van-popup v-model="reviseName" style="height: 100%" position="bottom">
@@ -30,23 +31,33 @@
         v-if="reviseName"
       />
     </van-popup>
+    <van-popup v-model="reviseGender" position="bottom">
+      <ReviseGender
+        @close="reviseGender = false"
+        v-model="userList.gender"
+        v-if="reviseGender"
+      />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserProfile } from '@/api/user'
 import ReviseName from './components/reviseName.vue'
+import ReviseGender from './components/reviseGender.vue'
 
 export default {
   name: 'UserProfile',
   components: {
-    ReviseName
+    ReviseName,
+    ReviseGender
   },
   props: {},
   data () {
     return {
       userList: {},
-      reviseName: false
+      reviseName: false,
+      reviseGender: false
     }
   },
   computed: {},

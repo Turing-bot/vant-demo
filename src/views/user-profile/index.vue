@@ -8,7 +8,14 @@
       @click-left="$router.back()"
     />
     <!-- /导航栏 -->
-    <van-cell title="头像" is-link>
+    <input type="file" hidden ref="file" @change="onFileChange" />
+    <van-cell
+      title="头像"
+      is-link
+      class="photo-cell"
+      center
+      @click="$refs.file.click()"
+    >
       <van-image class="avatar" fit="cover" round :src="userList.photo" />
     </van-cell>
     <van-cell
@@ -50,6 +57,14 @@
         v-if="reviseBirthday"
       />
     </van-popup>
+    <van-popup v-model="revisePhoto" style="height: 100%" position="bottom">
+      <RevisePhoto
+        :img="img"
+        @close="revisePhoto = false"
+        @update-photo="userList.photo = $event"
+        v-if="revisePhoto"
+      />
+    </van-popup>
   </div>
 </template>
 
@@ -58,13 +73,15 @@ import { getUserProfile } from '@/api/user'
 import ReviseName from './components/reviseName.vue'
 import ReviseGender from './components/reviseGender.vue'
 import ReviseBirthday from './components/reviseBirthday.vue'
+import RevisePhoto from './components/revisePhoto.vue'
 
 export default {
   name: 'UserProfile',
   components: {
     ReviseName,
     ReviseGender,
-    ReviseBirthday
+    ReviseBirthday,
+    RevisePhoto
   },
   props: {},
   data () {
@@ -72,7 +89,9 @@ export default {
       userList: {},
       reviseName: false,
       reviseGender: false,
-      reviseBirthday: false
+      reviseBirthday: false,
+      revisePhoto: false,
+      img: null
     }
   },
   computed: {},
@@ -89,6 +108,12 @@ export default {
       } catch (err) {
         this.$toast('获取数据失败！')
       }
+    },
+    onFileChange () {
+      const file = this.$refs.file.files[0]
+      this.img = window.URL.createObjectURL(file)
+      this.revisePhoto = true
+      this.$refs.file.value = ''
     }
   }
 }
@@ -102,6 +127,12 @@ export default {
   }
   .van-popup {
     background: #f5f7f9;
+  }
+  .photo-cell {
+    .van-cell__value {
+      display: flex;
+      flex-direction: row-reverse;
+    }
   }
 }
 </style>

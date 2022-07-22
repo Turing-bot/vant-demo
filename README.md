@@ -1,24 +1,9 @@
-# vant-demo
+## homepage
 
-## Project setup
-```
-yarn install
-```
+<img src='./src/assets/homepage.png'>
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+&nbsp;
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## userinfo
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+<img src='./src/assets/userinfo.png'>
